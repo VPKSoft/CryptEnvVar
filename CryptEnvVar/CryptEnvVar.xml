@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CryptEnvVar</name>
+    </assembly>
+    <members>
+        <member name="T:CryptEnvVar.EncryptDecryptTextAesBase64">
+            <summary>
+            A class to encrypt or decrypt strings using <see cref="T:System.Security.Cryptography.AesManaged"/> using base-64 encoding for the encrypted data.
+            </summary>
+        </member>
+        <member name="F:CryptEnvVar.EncryptDecryptTextAesBase64.Alphabets">
+            <summary>
+            The alphabets both upper and lower to generate characters to the pass-phrase end in case it is too short.
+            </summary>
+        </member>
+        <member name="M:CryptEnvVar.EncryptDecryptTextAesBase64.EncryptFileBlocks(System.String,System.String,System.Int32)">
+            <summary>
+            Encrypts the file blocks using <see cref="T:System.Security.Cryptography.AesManaged"/> and returns them as list of base-64 encoded strings.
+            </summary>
+            <param name="fileName">Name of the file to split into encrypted base-64 encoded string blocks.</param>
+            <param name="password">The password to use for the encryption.</param>
+            <param name="blockSize">Size of the block to use to split the file data.</param>
+            <returns>A List&lt;System.String&gt; containing the encrypted data.</returns>
+        </member>
+        <member name="M:CryptEnvVar.EncryptDecryptTextAesBase64.FillPassword(System.String)">
+            <summary>
+            Fills the password to match the length required for <see cref="T:System.Security.Cryptography.AesManaged"/> 256 bit key size.
+            </summary>
+            <param name="password">The password to fill with characters.</param>
+            <returns>The password matching the length required for <see cref="T:System.Security.Cryptography.AesManaged"/> 256 bit key size.</returns>
+            <remarks>The data is not randomized encrypted.</remarks>
+        </member>
+        <member name="P:CryptEnvVar.EncryptDecryptTextAesBase64.BufferSize">
+            <summary>
+            Gets or sets the size of the buffer to be used with the encryption and decryption algorithms.
+            </summary>
+            <value>The size of the buffer to be used with the encryption and decryption algorithms.</value>
+        </member>
+        <member name="M:CryptEnvVar.EncryptDecryptTextAesBase64.EncryptFileBlocks(System.Byte[],System.String,System.Int32)">
+            <summary>
+            Encrypts the file blocks using <see cref="T:System.Security.Cryptography.AesManaged"/> encryption with the specified file contents, password and block size (data blocks).
+            </summary>
+            <param name="contents">The contents of the file.</param>
+            <param name="password">The password for the encryption.</param>
+            <param name="blockSize">Size of the block.</param>
+            <returns>List&lt;System.String&gt;. containing the file data divided into encrypted base-64 encoded string blocks.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">password - At least six digits is required for the password.</exception>
+        </member>
+        <member name="M:CryptEnvVar.EncryptDecryptTextAesBase64.AddBytes(System.Collections.Generic.List{System.Byte}@,System.Byte[],System.Int32)">
+            <summary>
+            Adds specified amount of bytes to a specified byte list and additionally specified length.
+            </summary>
+            <param name="bytes">The bytes to add more bytes into.</param>
+            <param name="addBytes">The bytes to add.</param>
+            <param name="length">The length of how many bytes to add.</param>
+        </member>
+        <member name="M:CryptEnvVar.EncryptDecryptTextAesBase64.InsertBytes(System.Byte[],System.Byte[],System.Int32)">
+            <summary>
+            Inserts the specified bytes into a specified byte array and additionally specified length.
+            </summary>
+            <param name="bytes">The bytes to insert more bytes into.</param>
+            <param name="addBytes">The bytes to insert.</param>
+            <param name="length">The length of bytes to insert.</param>
+            <returns>System.Byte[] containing the combined byte array result.</returns>
+        </member>
+        <member name="M:CryptEnvVar.EncryptDecryptTextAesBase64.DecryptBase64Blocks(System.String,System.String[])">
+            <summary>
+            Decrypts the specified encrypted base-64 environment variables into a byte array.
+            </summary>
+            <param name="password">The password to use for the decryption.</param>
+            <param name="blocks">A semicolon-delimited array of environment variables containing the data to decrypt.</param>
+            <returns>System.Byte[] containing the combined data of the from the specified environment variables.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">password - At least six digits is required for the password.</exception>
+        </member>
+        <member name="M:CryptEnvVar.EncryptDecryptTextAesBase64.DecryptBase64Block(System.String,System.String)">
+            <summary>
+            Decrypts a single base-64 encoded encrypted data.
+            </summary>
+            <param name="password">The password to use for the decryption.</param>
+            <param name="base64data">The base-64 value containing the data to decrypt.</param>
+            <returns>System.Byte[] containing the decrypted data.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">password - At least six digits is required for the password.</exception>
+        </member>
+        <member name="T:CryptEnvVar.Program">
+            <summary>
+            A program to encrypt or decrypt data from small files.
+            </summary>
+        </member>
+        <member name="T:CryptEnvVar.Program.Arguments">
+            <summary>
+            The arguments passed to the program.
+            </summary>
+        </member>
+        <member name="P:CryptEnvVar.Program.Arguments.Password">
+            <summary>
+            Gets or sets the password to be used with the encryption/decryption.
+            </summary>
+        </member>
+        <member name="P:CryptEnvVar.Program.Arguments.FileName">
+            <summary>
+            Gets or sets the name of the file for data input or output.
+            </summary>
+        </member>
+        <member name="P:CryptEnvVar.Program.Arguments.BlockSize">
+            <summary>
+            Gets or sets the size of the block to be used with the encryption.
+            </summary>
+        </member>
+        <member name="P:CryptEnvVar.Program.Arguments.EnvironmentVariables">
+            <summary>
+            Gets or sets the environment variables as a semicolon (';') delimited list.
+            </summary>
+            <value>The environment variables.</value>
+        </member>
+        <member name="M:CryptEnvVar.Program.Main(System.String[])">
+            <summary>
+            Defines the entry point of the application.
+            </summary>
+            <param name="args">The arguments.</param>
+            <returns>A integer value describing the execution status of the program.</returns>
+        </member>
+        <member name="M:CryptEnvVar.Program.ShowHelp">
+            <summary>
+            Displays the command line arguments for the software.
+            </summary>
+        </member>
+    </members>
+</doc>

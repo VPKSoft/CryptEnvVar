@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Company>VPKSoft</Company>
+    <Description>A simple program to encrypt small files into a blocks of base-64 encoded AES encrypted data. This can be used to store sensitive small files into a CI/CD environment variables.</Description>
+    <Copyright>Copyright © VPKSoft 2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/VPKSoft/CryptEnvVar</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/VPKSoft/CryptEnvVar</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>encrypt decrypt environment variable ci cd continous integration</PackageTags>
+    <PackageReleaseNotes>See: https://github.com/VPKSoft/CryptEnvVar</PackageReleaseNotes>
+    <PackageIcon>vpksoft_logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Files\GitHub\CryptEnvVar\CryptEnvVar\CryptEnvVar.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Files\GitHub\CryptEnvVar\CryptEnvVar\CryptEnvVar.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.0-preview1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="secret_file.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="vpksoft_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

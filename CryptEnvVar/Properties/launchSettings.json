@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CryptEnvVar": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Files\\GitHub\\CryptEnvVar\\CryptEnvVar\\bin\\Debug\\netcoreapp3.1\\CryptEnvVar.exe"
+    }
+  }
+}
