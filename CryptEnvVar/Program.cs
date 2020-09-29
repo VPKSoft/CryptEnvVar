@@ -95,7 +95,15 @@ namespace CryptEnvVar
             arguments.BlockSize = arguments.BlockSize == 0 ? 1024 : arguments.BlockSize;
 
             // create a console sized splitter line..
-            var splitString = new string('-', Console.WindowWidth);
+            var splitString = new string('-', 72);
+            try
+            {
+                splitString = new string('-', Console.WindowWidth);
+            }
+            catch
+            {
+                // the Console.WindowWidth threw an exception..
+            }
 
             try // we try so the possible error can be reported..
             {
