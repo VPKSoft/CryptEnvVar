@@ -100,9 +100,10 @@ namespace CryptEnvVar
             {
                 splitString = new string('-', Console.WindowWidth);
             }
-            catch
+            catch (Exception ex)
             {
-                // the Console.WindowWidth threw an exception..
+                // the Console.WindowWidth threw an exception..                        }
+                Console.WriteLine($"Failed to read console width with exception: '{ex.Message}'.");
             }
 
             try // we try so the possible error can be reported..
@@ -126,27 +127,34 @@ namespace CryptEnvVar
                     // encrypt a redirected file data..
                     if (Console.IsInputRedirected)
                     {
-                        using var memoryStream = new MemoryStream();
-                        int bytes;
-
-                        // read the file contents from the standard input..
-                        using var inputStream = Console.OpenStandardInput();
-
-                        byte[] buffer = new byte[1000];
-
-                        // ..and write the data read to a memory stream..
-                        while ((bytes = inputStream.Read(buffer, 0, 1000)) > 0)
+                        try
                         {
-                            memoryStream.Write(buffer, 0, bytes);
+                            using var memoryStream = new MemoryStream();
+                            int bytes;
+
+                            // read the file contents from the standard input..
+                            using var inputStream = Console.OpenStandardInput();
+
+                            byte[] buffer = new byte[1000];
+
+                            // ..and write the data read to a memory stream..
+                            while ((bytes = inputStream.Read(buffer, 0, 1000)) > 0)
+                            {
+                                memoryStream.Write(buffer, 0, bytes);
+                            }
+
+                            var blockNum = 0;
+
+                            foreach (var block in EncryptDecryptTextAesBase64.EncryptFileBlocks(memoryStream.ToArray(),
+                                arguments.Password, arguments.BlockSize))
+                            {
+                                // display the result to the user..
+                                WriteBlockData(blockNum++, block, splitString);
+                            }
                         }
-
-                        var blockNum = 0;
-
-                        foreach (var block in EncryptDecryptTextAesBase64.EncryptFileBlocks(memoryStream.ToArray(),
-                            arguments.Password, arguments.BlockSize))
+                        catch (Exception ex)
                         {
-                            // display the result to the user..
-                            WriteBlockData(blockNum++, block, splitString);
+                            Console.WriteLine($"Failed to read from redirected input with exception: '{ex.Message}'.");
                         }
                     }
 
@@ -167,10 +175,17 @@ namespace CryptEnvVar
                     }
 
                     // if the standard output is redirected, write the data the standard output..-
-                    if (Console.IsOutputRedirected)
+                    try
                     {
-                        using var stream = Console.OpenStandardOutput();
-                        stream.Write(byteData, 0, byteData.Length);
+                        if (Console.IsOutputRedirected)
+                        {
+                            using var stream = Console.OpenStandardOutput();
+                            stream.Write(byteData, 0, byteData.Length);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to write to redirected output with exception: '{ex.Message}'.");
                     }
 
                     return 0;
