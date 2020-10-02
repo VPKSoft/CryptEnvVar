@@ -107,6 +107,11 @@
             Gets or sets the size of the block to be used with the encryption.
             </summary>
         </member>
+        <member name="P:CryptEnvVar.Program.Arguments.ConsoleWidth">
+            <summary>
+            Gets or set the width of the console.
+            </summary>
+        </member>
         <member name="P:CryptEnvVar.Program.Arguments.EnvironmentVariables">
             <summary>
             Gets or sets the environment variables as a semicolon (';') delimited list.
@@ -119,6 +124,13 @@
             </summary>
             <param name="args">The arguments.</param>
             <returns>A integer value describing the execution status of the program.</returns>
+        </member>
+        <member name="M:CryptEnvVar.Program.SafeAction(System.Action,System.String)">
+            <summary>
+            Executes a specified action and in case of an exception tries to report the exception to the <see cref="T:System.Console"/> standard output.
+            </summary>
+            <param name="action">The action to execute.</param>
+            <param name="exceptionMessage">The message to display in case of an exception. This must have the {0} parameter defined to display the exception message.</param>
         </member>
         <member name="M:CryptEnvVar.Program.ShowHelp">
             <summary>

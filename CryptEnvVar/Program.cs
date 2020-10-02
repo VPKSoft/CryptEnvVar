@@ -59,6 +59,12 @@ namespace CryptEnvVar
             public int BlockSize { get; set; }
 
             /// <summary>
+            /// Gets or set the width of the console.
+            /// </summary>
+            [Option('w', "width", Required = false, HelpText = "The width of the console.")]
+            public int ConsoleWidth { get; set; }
+
+            /// <summary>
             /// Gets or sets the environment variables as a semicolon (';') delimited list.
             /// </summary>
             /// <value>The environment variables.</value>
@@ -75,39 +81,43 @@ namespace CryptEnvVar
         {
             void WriteBlockData(int blockNumber, string blockData, string split)
             {
-                Console.WriteLine($"Block ({blockNumber:D4})");
-                Console.WriteLine(split);
-                Console.WriteLine(blockData);
-                Console.WriteLine(split);
-                Console.WriteLine();
-            }
-
-            // get the arguments given to the program..
-            var arguments = Parser.Default.ParseArguments<Arguments>(args).Value;
-
-            // validate that arguments were given to the software..-
-            if (arguments == null)
-            {
-                return -1;
-            }
-
-            // default the block size..
-            arguments.BlockSize = arguments.BlockSize == 0 ? 1024 : arguments.BlockSize;
-
-            // create a console sized splitter line..
-            var splitString = new string('-', 72);
-            try
-            {
-                splitString = new string('-', Console.WindowWidth);
-            }
-            catch (Exception ex)
-            {
-                // the Console.WindowWidth threw an exception..                        }
-                Console.WriteLine($"Failed to read console width with exception: '{ex.Message}'.");
+                SafeAction(() =>
+                {
+                    Console.WriteLine($"Block ({blockNumber:D4})");
+                    Console.WriteLine(split);
+                    Console.WriteLine(blockData);
+                    Console.WriteLine(split);
+                    Console.WriteLine();
+                }, "Error occurred during the console output: '{0}'.");
             }
 
             try // we try so the possible error can be reported..
             {
+                // get the arguments given to the program..
+                var arguments = Parser.Default.ParseArguments<Arguments>(args).Value;
+
+                // validate that arguments were given to the software..-
+                if (arguments == null)
+                {
+                    return -1;
+                }
+
+                // default the block size..
+                arguments.BlockSize = arguments.BlockSize == 0 ? 1024 : arguments.BlockSize;
+
+                // create a console sized splitter line..
+                var splitString = new string('-', 72);
+
+                if (arguments.ConsoleWidth != 0)
+                {
+                    splitString = new string('-', arguments.ConsoleWidth);
+                }
+                else
+                {
+                    SafeAction(() => splitString = new string('-', Console.WindowWidth),
+                        "Failed to read console width with exception: '{0}'.");
+                }
+
                 // validate the arguments for encryption of file contents.
                 if ((arguments.FileName != null || Console.IsInputRedirected) && arguments.EnvironmentVariables == null)
                 {
@@ -125,38 +135,31 @@ namespace CryptEnvVar
                     }
 
                     // encrypt a redirected file data..
-                    if (Console.IsInputRedirected)
+                    SafeAction(() =>
                     {
-                        try
+                        using var memoryStream = new MemoryStream();
+                        int bytes;
+
+                        // read the file contents from the standard input..
+                        using var inputStream = Console.OpenStandardInput();
+
+                        byte[] buffer = new byte[1000];
+
+                        // ..and write the data read to a memory stream..
+                        while ((bytes = inputStream.Read(buffer, 0, 1000)) > 0)
                         {
-                            using var memoryStream = new MemoryStream();
-                            int bytes;
-
-                            // read the file contents from the standard input..
-                            using var inputStream = Console.OpenStandardInput();
-
-                            byte[] buffer = new byte[1000];
-
-                            // ..and write the data read to a memory stream..
-                            while ((bytes = inputStream.Read(buffer, 0, 1000)) > 0)
-                            {
-                                memoryStream.Write(buffer, 0, bytes);
-                            }
-
-                            var blockNum = 0;
-
-                            foreach (var block in EncryptDecryptTextAesBase64.EncryptFileBlocks(memoryStream.ToArray(),
-                                arguments.Password, arguments.BlockSize))
-                            {
-                                // display the result to the user..
-                                WriteBlockData(blockNum++, block, splitString);
-                            }
+                            memoryStream.Write(buffer, 0, bytes);
                         }
-                        catch (Exception ex)
+
+                        var blockNum = 0;
+
+                        foreach (var block in EncryptDecryptTextAesBase64.EncryptFileBlocks(memoryStream.ToArray(),
+                            arguments.Password, arguments.BlockSize))
                         {
-                            Console.WriteLine($"Failed to read from redirected input with exception: '{ex.Message}'.");
+                            // display the result to the user..
+                            WriteBlockData(blockNum++, block, splitString);
                         }
-                    }
+                    }, "Failed to read from redirected input with exception: '{0}'.");
 
                     return 0;
                 }
@@ -175,18 +178,15 @@ namespace CryptEnvVar
                     }
 
                     // if the standard output is redirected, write the data the standard output..-
-                    try
+
+                    SafeAction(() =>
                     {
                         if (Console.IsOutputRedirected)
                         {
                             using var stream = Console.OpenStandardOutput();
                             stream.Write(byteData, 0, byteData.Length);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Failed to write to redirected output with exception: '{ex.Message}'.");
-                    }
+                    }, "Failed to write to redirected output with exception: '{0}'.");
 
                     return 0;
                 }
@@ -200,6 +200,37 @@ namespace CryptEnvVar
             {
                 Console.WriteLine($"An error occurred with the software execution: '{ex.Message}'. See --help for help.");
                 return -1;
+            }
+        }
+
+        /// <summary>
+        /// Executes a specified action and in case of an exception tries to report the exception to the <see cref="Console"/> standard output.
+        /// </summary>
+        /// <param name="action">The action to execute.</param>
+        /// <param name="exceptionMessage">The message to display in case of an exception. This must have the {0} parameter defined to display the exception message.</param>
+        private static void SafeAction(Action action, string exceptionMessage)
+        {
+            try
+            {
+                action.Invoke();
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    if (exceptionMessage.Contains("{0}"))
+                    {
+                        Console.WriteLine(exceptionMessage, ex.Message);
+                    }
+                    else
+                    {
+                        Console.WriteLine(exceptionMessage);
+                    }
+                }
+                catch
+                {
+                    // the console output is giving an error..
+                }
             }
         }
 
