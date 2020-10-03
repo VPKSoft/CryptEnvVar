@@ -4,7 +4,7 @@ A simple program to encrypt small files into a blocks of base-64 encoded AES enc
 ## Usage
 **Encrypt a file:**
 
-*CryptEnvVar -s password123 -b 1024 < ..\..\..\Debug\netcoreapp3.1\secret_file.txt*
+`CryptEnvVar -s password123 -b 1024 < ..\..\..\Debug\netcoreapp3.1\secret_file.txt`
 
 **Output:**
 ```
