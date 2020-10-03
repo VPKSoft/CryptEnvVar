@@ -4,9 +4,10 @@ A simple program to encrypt small files into a blocks of base-64 encoded AES enc
 ## Usage
 **Encrypt a file:**
 
-*CryptEnvVar -s password123 -b 1024 < ..\..\..\Debug\netcoreapp3.1\secret_file.txt*
+`CryptEnvVar -s password123 -b 1024 < ..\..\..\Debug\netcoreapp3.1\secret_file.txt`
 
 **Output:**
+```
 *Block (0000)*
 
 *----------------------------------------------------------------------------------------------------------------------*
@@ -20,27 +21,43 @@ A simple program to encrypt small files into a blocks of base-64 encoded AES enc
 *Z7+/an9KOD9k7jKS4nt0J2FRmo9lpkwUWa6TpLoW7E1X7PUv2uZY74z5skxNkHGvoCUUv41YxU8F7iPhqSA+nl5pjvwRtfLKzYsv4+YBaR0eF3fmTmTWJ+miBMFlqakFr/u7e8M7HKmnF8gxAQlPrV2wMJQgvcY4LS9rOnbjnwsWPf8Hwy0YIaHigia9yrEDNGzeAasbXTyxSb6P4oRSrS36rsM0+9eK9j6Hl365iGJdbLPlp6qZAPsUblhDtE6saCKZU59zVZrYlcVlG1Q3kf0gPRc9t4Zpejcb7ykRdJ+4y6nTYZzOSWrLsPALrnlOJ5pJ3wYKlBoc4A52PZBPgCwvBcFlMlqOXfMKhWqEXveyi7Frnz+YKVjuHDkhUAjU5m4gjIsY30QYBXGYGV1DCK0ArVoI2XruzoFl33uc1ApLycx6JKnKsxVQfhfKpJ1D99fltoT9ee4R1fmqIc/4/AjxauPhRiRD1jCz9ZPX4eLCeQGCZbY9lxOfLVaPCUQ14hYaXdVTAzZbOKK/M2Oel2QeytH3AVUNN4TWKmVEjhRzyVacgCAfdZtpniZzAhUfoFqPTXMxvretBN8fSEr0KPVSJ9EUoXKFcyGEeesll8Btj5fS/ZN+uQX8S9MAAE3UCsEjAebQp1jKsUN/eYi9XmSysYeJuq/EfH+2U538vO8p9mgtRJE1pk/FQoEDObQV7Tnz+4QYx/VY+0i96UIcXi0198sKjIUWTaeqsolfkhiXBAeCRFY+UZi2HXQIIAAotKnplYtgQOKwdTF332RVQw==*
 
 *----------------------------------------------------------------------------------------------------------------------*
-
+```
 **Decrypt a file from an environment variable:**
 
-*CryptEnvVar -s password123 -e var1;var2*
+`CryptEnvVar -s password123 -e var1;var2 > decrypt.txt`
 
 **Help:**
 
-*CryptEnvVar --help*
+`CryptEnvVar --help`
 
 **Output:**
-*CryptEnvVar 1.0.0*
-*Copyright © VPKSoft 2020*
+```
+CryptEnvVar 1.0.3
+Copyright © VPKSoft 2020
 
-  *-s, --secret         Required. The secret to encrypt or decrypt data.*
+ERROR(S):
+  Required option 's, secret' is missing.
 
-  *-f, --file           The file name to use.*
+  -s, --secret              Required. The secret to encrypt or decrypt data.
 
-  *-b, --block          The amount of encrypted data to include in a single base-64 encoded block. The default is 1024.*
+  -f, --file                The file name to use.
 
-  *-e, --environment    Environment variables to decrypt. This is a semicolon (';') delimited list.*
+  -b, --block               The amount of encrypted data to include in a single
+                            base-64 encoded block. The default is 1024.
 
-  *--help               Display this help screen.*
+  -w, --width               The width of the console.
 
-  *--version            Display version information.*
+  -e, --environment         Environment variables to decrypt. This is a
+                            semicolon (';') delimited list.
+
+  -i, --ignoreRedirect      A flag indicating whether to ignore console
+                            input/output redirection in case of a CI/CD
+                            environment.
+
+  -v, --verbose             A flag indicating whether display as much output as
+                            possible.
+
+  --help                    Display this help screen.
+
+  --version                 Display version information.
+```
