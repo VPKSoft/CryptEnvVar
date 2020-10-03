@@ -24,11 +24,11 @@ A simple program to encrypt small files into a blocks of base-64 encoded AES enc
 ```
 **Decrypt a file from an environment variable:**
 
-`*CryptEnvVar -s password123 -e var1;var2* > decrypt.txt`
+`CryptEnvVar -s password123 -e var1;var2* > decrypt.txt`
 
 **Help:**
 
-`*CryptEnvVar --help*`
+`CryptEnvVar --help*`
 
 **Output:**
 ```
