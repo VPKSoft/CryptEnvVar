@@ -50,11 +50,11 @@ ERROR(S):
   -e, --environment         Environment variables to decrypt. This is a
                             semicolon (';') delimited list.
 
-  -i, ----ignoreRedirect    A flag indicating whether to ignore console
+  -i, --ignoreRedirect      A flag indicating whether to ignore console
                             input/output redirection in case of a CI/CD
                             environment.
 
-  -v, ----verbose           A flag indicating whether display as much output as
+  -v, --verbose             A flag indicating whether display as much output as
                             possible.
 
   --help                    Display this help screen.
