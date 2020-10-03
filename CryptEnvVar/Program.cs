@@ -73,13 +73,13 @@ namespace CryptEnvVar
             /// <summary>
             /// Gets or sets a value whether to ignore input/output redirection.
             /// </summary>
-            [Option('i', "--ignoreRedirect", Required = false, HelpText = "A flag indicating whether to ignore console input/output redirection in case of a CI/CD environment.")]
+            [Option('i', "ignoreRedirect", Required = false, HelpText = "A flag indicating whether to ignore console input/output redirection in case of a CI/CD environment.")]
             public bool IgnoreRedirect { get; set; }
 
             /// <summary>
             /// Gets or sets a value indicating whether display as much output as possible.
             /// </summary>
-            [Option('v', "--verbose", Required = false, HelpText = "A flag indicating whether display as much output as possible.")]
+            [Option('v', "verbose", Required = false, HelpText = "A flag indicating whether display as much output as possible.")]
             public bool Verbose { get; set; }
         }
 
