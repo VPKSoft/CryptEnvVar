@@ -116,7 +116,16 @@
             <summary>
             Gets or sets the environment variables as a semicolon (';') delimited list.
             </summary>
-            <value>The environment variables.</value>
+        </member>
+        <member name="P:CryptEnvVar.Program.Arguments.IgnoreRedirect">
+            <summary>
+            Gets or sets a value whether to ignore input/output redirection.
+            </summary>
+        </member>
+        <member name="P:CryptEnvVar.Program.Arguments.Verbose">
+            <summary>
+            Gets or sets a value indicating whether display as much output as possible.
+            </summary>
         </member>
         <member name="M:CryptEnvVar.Program.Main(System.String[])">
             <summary>

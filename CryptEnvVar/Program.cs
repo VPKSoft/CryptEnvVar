@@ -67,9 +67,20 @@ namespace CryptEnvVar
             /// <summary>
             /// Gets or sets the environment variables as a semicolon (';') delimited list.
             /// </summary>
-            /// <value>The environment variables.</value>
             [Option('e', "environment", Required = false, HelpText = "Environment variables to decrypt. This is a semicolon (';') delimited list.")]
             public string EnvironmentVariables { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value whether to ignore input/output redirection.
+            /// </summary>
+            [Option('i', "--ignoreRedirect", Required = false, HelpText = "A flag indicating whether to ignore console input/output redirection in case of a CI/CD environment.")]
+            public bool IgnoreRedirect { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether display as much output as possible.
+            /// </summary>
+            [Option('v', "--verbose", Required = false, HelpText = "A flag indicating whether display as much output as possible.")]
+            public bool Verbose { get; set; }
         }
 
         /// <summary>
@@ -137,27 +148,30 @@ namespace CryptEnvVar
                     // encrypt a redirected file data..
                     SafeAction(() =>
                     {
-                        using var memoryStream = new MemoryStream();
-                        int bytes;
-
-                        // read the file contents from the standard input..
-                        using var inputStream = Console.OpenStandardInput();
-
-                        byte[] buffer = new byte[1000];
-
-                        // ..and write the data read to a memory stream..
-                        while ((bytes = inputStream.Read(buffer, 0, 1000)) > 0)
+                        if (Console.IsInputRedirected && !arguments.IgnoreRedirect)
                         {
-                            memoryStream.Write(buffer, 0, bytes);
-                        }
+                            using var memoryStream = new MemoryStream();
+                            int bytes;
 
-                        var blockNum = 0;
+                            // read the file contents from the standard input..
+                            using var inputStream = Console.OpenStandardInput();
 
-                        foreach (var block in EncryptDecryptTextAesBase64.EncryptFileBlocks(memoryStream.ToArray(),
-                            arguments.Password, arguments.BlockSize))
-                        {
-                            // display the result to the user..
-                            WriteBlockData(blockNum++, block, splitString);
+                            byte[] buffer = new byte[1000];
+
+                            // ..and write the data read to a memory stream..
+                            while ((bytes = inputStream.Read(buffer, 0, 1000)) > 0)
+                            {
+                                memoryStream.Write(buffer, 0, bytes);
+                            }
+
+                            var blockNum = 0;
+
+                            foreach (var block in EncryptDecryptTextAesBase64.EncryptFileBlocks(memoryStream.ToArray(),
+                                arguments.Password, arguments.BlockSize))
+                            {
+                                // display the result to the user..
+                                WriteBlockData(blockNum++, block, splitString);
+                            }
                         }
                     }, "Failed to read from redirected input with exception: '{0}'.");
 
@@ -175,13 +189,23 @@ namespace CryptEnvVar
                     if (arguments.FileName != null) 
                     {
                         File.WriteAllBytes(arguments.FileName, byteData);
+
+                        SafeAction(() =>
+                        {
+                            if (arguments.Verbose && (!Console.IsOutputRedirected || arguments.IgnoreRedirect))
+                            {
+                                Console.WriteLine($"The file was successfully created: '{arguments.FileName}' / '{Path.GetFullPath(arguments.FileName)}'.");
+                                var info = new FileInfo(Path.GetFullPath(arguments.FileName));
+                                Console.WriteLine($"File size: {info.Length}.");
+                            }
+                        }, "An exception occurred during data output: '{0}'.");
                     }
 
                     // if the standard output is redirected, write the data the standard output..-
 
                     SafeAction(() =>
                     {
-                        if (Console.IsOutputRedirected)
+                        if (Console.IsOutputRedirected && !arguments.IgnoreRedirect)
                         {
                             using var stream = Console.OpenStandardOutput();
                             stream.Write(byteData, 0, byteData.Length);
