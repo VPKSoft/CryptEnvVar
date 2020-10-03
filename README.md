@@ -33,9 +33,6 @@ Z7+/an9KOD9k7jKS4nt0J2FRmo9lpkwUWa6TpLoW7E1X7PUv2uZY74z5skxNkHGvoCUUv41YxU8F7iPh
 CryptEnvVar 1.0.3
 Copyright © VPKSoft 2020
 
-ERROR(S):
-  Required option 's, secret' is missing.
-
   -s, --secret              Required. The secret to encrypt or decrypt data.
 
   -f, --file                The file name to use.
