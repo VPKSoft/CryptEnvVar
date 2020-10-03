@@ -28,7 +28,7 @@ A simple program to encrypt small files into a blocks of base-64 encoded AES enc
 
 **Help:**
 
-`CryptEnvVar --help*`
+`CryptEnvVar --help`
 
 **Output:**
 ```
